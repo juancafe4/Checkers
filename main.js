@@ -23,7 +23,7 @@ $(function() {
 
   //Restart button
   $('#restart').on('click', function() {
-
+    chessBoard(8)
   });
 
   
@@ -83,7 +83,7 @@ function chessBoard(cols) {
 
     $($white).on('click', function(event) {
       let isRight = false
-      console.log("array ", movesPosiible)
+      // console.log("array ", movesPosiible)
       // console.log('array of ids', movesPosiible)
       // console.log('id selected ', $($pieceSelected).attr("id"))
       if (moveState && movesPosiible.length) {
@@ -93,6 +93,9 @@ function chessBoard(cols) {
             isRight = true
             $($pieceSelected).detach();
             $($pieceSelected).attr("id", $(this).attr("id"))
+            let pos = parseInt($(this).attr("id"))
+            console.log("curent position ", pos)
+
             $(this).append($pieceSelected)
             $(".white").css('background-color', 'white');
             console.log(movesPosiible[i])
@@ -103,6 +106,13 @@ function chessBoard(cols) {
               "border-color": ""});
             $pieceSelected = '';
 
+
+            //king statement 
+            if (pos >= 1 && pos <= 4) {
+              console.log("I am king")
+              $("#" + pos + ">img").css('background-color', '#FFA500');
+              $("#" + pos + ">img").addClass('king');
+            }
           }
         }
         
@@ -128,7 +138,7 @@ function chessBoard(cols) {
     $pieceSelected = $(this)
 
     let pieceID = parseInt($($pieceSelected).attr('id'))
-    
+    console.log("king?", $($pieceSelected).hasClass("king"))
     movesPosiible.push(pieceID)
     let obj = {}
         if($($pieceSelected).hasClass('redPiece')) {
@@ -138,9 +148,23 @@ function chessBoard(cols) {
               $('#' + (pieceID - 3)).css('background-color', 'yellow');
               obj = {"over": -1, "val": pieceID - 3}
               movesPosiible.push(obj)
-            } else {
+              //if is king 
+              if ($($pieceSelected).hasClass("king") && 
+                $('#' + (pieceID + 3)).children().length === 0) {
+                obj = {"over": -1, "val": pieceID + 3}
+                movesPosiible.push(obj)
+              }
+            } else { // there is a neghtbor 
+              if ($($pieceSelected).hasClass("king")  &&
+                $($('#' + (pieceID + 3)).children()[0]).hasClass('blackPiece')) {
+                obj = {"over": pieceID + 3, "val": pieceID + 7}
+                if ($('#' + (pieceID + 7)).children().length === 0) {
+                  $('#' + (pieceID + 7)).css('background-color', 'yellow');
+                  movesPosiible.push(obj)
+                }
+              }
               if ($($('#' + (pieceID - 3)).children()[0]).hasClass('blackPiece')) {
-                console.log(" wrong blackPiece ", pieceID)
+                //console.log(" wrong blackPiece ", pieceID)
                 obj = {"over": pieceID - 3, "val": pieceID - 7}
                 if ($('#' + (pieceID - 7)).children().length === 0) {
                   $('#' + (pieceID - 7)).css('background-color', 'yellow');
@@ -155,9 +179,24 @@ function chessBoard(cols) {
               $('#' + (pieceID - 4)).css('background-color', 'yellow');
               obj = {"over": -1, "val": pieceID - 4}
               movesPosiible.push(obj)
-            } else {
+
+              //if is king 
+              if ($($pieceSelected).hasClass("king") && 
+                $('#' + (pieceID + 4)).children().length === 0) {
+                obj = {"over": -1, "val": pieceID + 4}
+                movesPosiible.push(obj)
+              }
+            } else { //negithbor
+              if ($($pieceSelected).hasClass("king")  &&
+                $($('#' + (pieceID + 4)).children()[0]).hasClass('blackPiece')) {
+                obj = {"over": pieceID + 4, "val": pieceID + 9}
+                if ($('#' + (pieceID + 9)).children().length === 0) {
+                  $('#' + (pieceID + 9)).css('background-color', 'yellow');
+                  movesPosiible.push(obj)
+                }
+              }
               if ($($('#' + (pieceID - 4)).children()[0]).hasClass('blackPiece')) {
-                console.log(" wrong 2 blackPiece ", pieceID)
+                //console.log(" wrong 2 blackPiece ", pieceID)
                 if ($('#' + (pieceID - 9)).children().length === 0) {
                   $('#' + (pieceID - 9)).css('background-color', 'yellow');
                   obj = {"over": pieceID - 4, "val": pieceID - 9}
@@ -174,7 +213,7 @@ function chessBoard(cols) {
               movesPosiible.push(obj)
             } else {
               if (($($('#' + (pieceID - 5)).children()[0])).hasClass('blackPiece')) {
-                console.log("-7 blackPiece ", pieceID)
+                //console.log("-7 blackPiece ", pieceID)
                 if ($('#' + (pieceID - 9)).children().length === 0) {
                   $('#' + (pieceID - 9)).css('background-color', 'yellow');
                   obj = {"over": pieceID - 5, "val": pieceID - 9}
@@ -191,7 +230,7 @@ function chessBoard(cols) {
               movesPosiible.push(obj)
             } else {
               if ($($('#' + (pieceID - 4)).children()[0]).hasClass('blackPiece')) {
-                console.log(" -4 blackPiece ", pieceID)
+                //console.log(" -4 blackPiece ", pieceID)
                 if ($('#' + (pieceID - 7)).children().length === 0) {
                   $('#' + (pieceID - 7)).css('background-color', 'yellow');
                   obj = {"over": pieceID - 4, "val": pieceID - 7}
@@ -210,7 +249,7 @@ function chessBoard(cols) {
               movesPosiible.push(obj)
             } else {
               if ($($('#' + (pieceID + 5)).children()[0]).hasClass('redPiece')) {
-                console.log("redPiece")
+                //console.log("redPiece")
                 if ($('#' + (pieceID + 9)).children().length === 0) {
                   $('#' + (pieceID + 9)).css('background-color', 'yellow');
                   obj = {"over": pieceID + 5, "val": pieceID + 9}
@@ -225,8 +264,8 @@ function chessBoard(cols) {
               movesPosiible.push(obj)
             } else {
               if ($($('#' + (pieceID + 4)).children()[0]).hasClass('redPiece')) {
-                console.log(" wrong redPiece ",  $('#' + (pieceID + 7)).children.length
-                , " ", pieceID + 7)
+                //console.log(" wrong redPiece ",  $('#' + (pieceID + 7)).children.length
+                //, " ", pieceID + 7)
                 if ($('#' + (pieceID + 7)).children().length === 0) {
                   $('#' + (pieceID + 7)).css('background-color', 'yellow');
                   obj = {"over": pieceID  + 4, "val": pieceID + 7}
@@ -242,8 +281,7 @@ function chessBoard(cols) {
               movesPosiible.push(obj)
             }  else {
               if ($($('#' + (pieceID + 3)).children()[0]).hasClass('redPiece')) {
-                console.log("SECOND WRONG redPiece ",  $('#' + (pieceID + 7)).children
-                , " ", pieceID + 7)
+               
                 if ($('#' + (pieceID + 7)).children().length === 0) {
                   $('#' + (pieceID + 7)).css('background-color', 'yellow');
                   obj = {"over": pieceID + 3, "val": pieceID + 7}
